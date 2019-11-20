@@ -4,11 +4,11 @@
             <table>
                 <tr>
                     <td>
-                        <van-button icon="records" type="default" size="large" @click="goProposals">提案征集
+                        <van-button icon="records" type="default" size="large" @click="goProposals(id)">提案征集
                         </van-button>
                     </td>
                     <td>
-                        <van-button type="primary" size="large" @click="goMessageBoard">向委员提问</van-button>
+                        <van-button type="primary" size="large" @click="goMessageBoard(id)">向委员提问</van-button>
                     </td>
                 </tr>
             </table>
@@ -19,12 +19,15 @@
 <script>
     export default {
         name: "mFooter",
+        props:[
+            'id'
+        ],
         methods:{
-            goMessageBoard() {
-                this.$router.push({path: '/messageBoard'})
+            goMessageBoard(id) {
+                this.$router.push({path: '/messageBoard/'+id})
             },
-            goProposals() {
-                this.$router.push({path: '/proposals'})
+            goProposals(id) {
+                this.$router.push({path: '/proposals/'+id})
             },
         }
     }

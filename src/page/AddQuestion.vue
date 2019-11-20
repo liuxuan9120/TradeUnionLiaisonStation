@@ -14,7 +14,7 @@
             <div>
                 <div>
 
-                    <div>会员所需咨询问题的内容描述会员所需咨询问题…</div>
+                    <div class="title_text">{{title}}…</div>
                     <van-cell-group>
                         <van-field
                                 v-model="message"
@@ -40,8 +40,12 @@
         data() {
             return {
                 checked: true,
-                message: ''
+                message: '',
+                title:''
             };
+        },
+        created() {
+            this.title=this.$route.params.title;
         },
         methods: {
             onClickLeft() {
@@ -50,8 +54,26 @@
                     : this.$router.push('/')
             },
             onSubmit() {
-                // console.log('submit!');
-                this.$toast('提交');
+                const that = this;
+                const id = that.$route.params.id;
+                const data = new FormData();
+                data.append('content', that.message);
+                data.append('committeeMemberinfoId', id);
+                this.axios.post(`${that.$API}/continueCommitteeMemberinfoSave`, data, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                    .then(function (response) {
+                        // eslint-disable-next-line no-console
+                        console.log(response.data.data.content);
+                        if (response.data.result) {
+                            that.$toast('提交成功');
+                        } else {
+                            that.$toast(response.data.msg);
+                        }
+                    })
+                    .catch(function (error) {
+                        // eslint-disable-next-line no-console
+                        console.log(error);
+                        that.$toast('提交失败');
+                    });
             }
         },
     }
@@ -85,6 +107,14 @@
 
     .van-nav-bar__text {
         color: black;
+
+    }
+
+    .title_text {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
 
     }
 </style>

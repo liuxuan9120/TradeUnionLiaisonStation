@@ -20,7 +20,7 @@
                     </van-col>
                     <van-col span="16">
                         <van-cell-group>
-                            <van-field v-model="value" placeholder="请输入标题"/>
+                            <van-field v-model="title" placeholder="请输入标题"/>
                         </van-cell-group>
                     </van-col>
                 </van-row>
@@ -49,6 +49,7 @@
                         v-model="fileList"
                         multiple
                         :max-count="5"
+                        :before-read="beforeRead"
                 />
             </div>
 
@@ -65,7 +66,7 @@
         name: "Proposals",
         data() {
             return {
-                titlename: '',
+                title: '',
                 fileList: [],
                 message: '',
                 value: '',
@@ -79,9 +80,90 @@
                     ? this.$router.go(-1)
                     : this.$router.push('/')
             },
+            // 返回布尔值
+            beforeRead(file) {
+                if (file.type !== 'image/jpeg') {
+                    this.$toast('请上传 jpg 格式图片');
+                    return false;
+                }
+
+                return true;
+            },
+            // addPhoto(){
+            //     let self = this
+            //     const form = new FormData()
+            //     self.fileList.forEach((file) => {   // fileList 是要上传的文件数组
+            //         self.imageUrl = file.url || file.thumbUrl
+            //         form.append('image', self.dataURLtoFile(self.imageUrl,file.name))
+            //     });
+            //     form.append('seedbedId', self.seedbedId)
+            //     const instance = axios.create({
+            //         withCredentials:true
+            //     })
+            //     instance.post('url',form).then(res=>{
+            //         if(res.data.code===2000){
+            //             console.log(res.data.message)
+            //         }else{
+            //             console.log(res.data.message)
+            //         }
+            //     })
+            //         .catch(err=>{
+            //             console.log(err)
+            //         })
+            // },
+            // dataURLtoFile(dataurl, filename) {//将base64转换为文件
+            //     var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            //         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            //     while(n--){
+            //         u8arr[n] = bstr.charCodeAt(n);
+            //     }
+            //     return new File([u8arr], filename, {type:mime});
+            // },
             onSubmit() {
-                // console.log('submit!');
-                this.$toast('提交');
+                const that = this;
+                const id = that.$route.params.id;
+                if(!that.title){
+                    that.$toast('标题不能为空');
+                    return
+                }
+                if(!that.message&&that.message.length>10){
+                    that.$toast('提案不能为空');
+                    return
+                }
+
+                const data = new FormData();
+                // eslint-disable-next-line no-console
+                console.log("file111",that.fileList)
+                data.append('title', that.title);
+                data.append('content', that.message);
+                data.append('committeeMemberId', id);
+                // data.append('file', that.fileList);
+                that.fileList.forEach((file) => {   // fileList 是要上传的文件数组
+                    // that.imageUrl = file.url || file.thumbUrl
+                    data.append('file', file.file)
+                });
+                // eslint-disable-next-line no-console
+                console.log("file222",that.fileList)
+                /*http://58.54.251.155:8088/wzzgh-fwdt/committeeImp/motionSave?liuyan=dddddddddddddddddddddddd&curId=12345*/
+                this.axios.post(`${that.$API}/motionSave`, data)
+                    .then( (response) =>{
+                        if(response.data.result){
+                            if(response.data.msg !==''){
+                                that.$toast(response.data.msg);
+                            }else{
+                                that.$toast('提交成功');
+                            }
+                            this.$router.push({path: '/MemberList'})
+                        }else{
+                            that.$toast(response.data.msg);
+                        }
+
+                    })
+                    .catch(function (error) {
+                        // eslint-disable-next-line no-console
+                        console.log("error",error)
+                        that.$toast('提交失败9');
+                    });
             },
             // handleRemove(file, fileList) {
             //     // console.log(file, fileList);

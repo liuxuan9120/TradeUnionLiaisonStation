@@ -5,13 +5,15 @@ import axios from "axios";
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
+axios.defaults.baseURL = 'http://58.54.251.155:8088';   //配置接口地址
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
-  // withCredentials: true, // Check cross-site Access-Control
+  baseURL: 'http://58.54.251.155:8088/wzzgh-fwdt/committeeImp',
+  timeout: 60 * 1000, // Timeout
+  withCredentials: true, // Check cross-site Access-Control
 };
 
 const _axios = axios.create(config);
@@ -46,10 +48,16 @@ Plugin.install = function(Vue) {
     axios: {
       get() {
         return _axios;
+      },
+      post(){
+        return _axios;
       }
     },
     $axios: {
       get() {
+        return _axios;
+      },
+      post(){
         return _axios;
       }
     },

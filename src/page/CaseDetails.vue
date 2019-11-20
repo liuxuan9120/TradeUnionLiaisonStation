@@ -1,17 +1,15 @@
 <template>
     <div class="case_details_page">
-        <div style="position: fixed;top:0;width: 100%;">
+        <div style="width: 100%;">
             <van-nav-bar
                     title="委员答疑"
                     left-text="返回"
                     left-arrow
                     @click-left="onClickLeft"
-                    fixed
                     border
             />
         </div>
-        <div style="height: 56px;"></div>
-        <div  class="case_details_content">
+        <div class="case_details_content">
 
 
             <div style="width: 100%;background-color: #f1f1f1;">
@@ -47,8 +45,8 @@
                          {{btnText}}
                      </div>
                  </div>-->
-                <m_uer_details :member="member"></m_uer_details>
-                <m_case_list></m_case_list>
+                <m_uer_details :member="getCommittee"></m_uer_details>
+                <m_case_list :caseList="qList"></m_case_list>
                 <!--  <div>
                       <van-tabs>
                           <van-tab v-for="(item,index) in caseList" :title="'案例 ' + (index+1)" v-bind:key="item.id">
@@ -99,19 +97,11 @@
             </div>
 
         </div>
-        <!--        <div style="background-color: white;position: fixed;bottom: 0;width: 100%;" class="footer">-->
-        <!--            <table>-->
-        <!--                <tr>-->
-        <!--                    <td>-->
-        <!--                        <van-button icon="records" type="default" size="large" @click="goProposals">提案征集</van-button>-->
-        <!--                    </td>-->
-        <!--                    <td>-->
-        <!--                        <van-button type="primary" size="large" @click="goMessageBoard">向委员提问</van-button>-->
-        <!--                    </td>-->
-        <!--                </tr>-->
-        <!--            </table>-->
-        <!--        </div>-->
-        <m_footer></m_footer>
+
+        <div>
+            <m_footer :id="selectId"></m_footer>
+        </div>
+
     </div>
 
 </template>
@@ -131,66 +121,65 @@
         },
         data() {
             return {
-                member: {}
+                // member: {},
+                qList: [],
+                selectId:null
             };
         },
-
+        created() {
+        },
         mounted() {
+
             const that = this;
             const id = that.$route.params.id;
-            console.log(`id.${id}`)
-            that.member = that.getMemberById(id)
-            console.log(`that.member${that.member}`)
-            /* const that = this;*/
-
-            /* this.$axios.post('/getCommitteeMemberInfoDetail', {
-                 committeeMemberInfoId: that.$route.params.id
-             })
-                 .then(function (response) {
-                     console.log(response);
-                 })
-                 .catch(function (error) {
-                     console.log(error);
-                 });*/
+            this.selectId=that.$route.params.id;
+            this.axios.get(`${that.$API}/recommendList?committeeMemberId=${id}`, {})
+                .then(function (response) {
+                    that.qList = response.data.data;
+                })
+                .catch(function (error) {
+                    // eslint-disable-next-line no-console
+                    console.log(error);
+                    that.$toast('获取失败6');
+                });
         },
         methods: {
-            getMemberById(id) {
-                const list = this.$store.getters.memberList;
-                console.log(`list${list}`)
-                for (let member of list) {
-                    if (member.id === id) {
-                        return member;
-                    }
-                }
-            },
             onClickLeft() {
                 window.history.length > 1
                     ? this.$router.go(-1)
                     : this.$router.push('/')
-                // Toast('返回');
             },
-            goMessageBoard() {
-                this.$router.push({path: '/messageBoard'})
+            goMessageBoard(id) {
+                this.$router.push({path: '/messageBoard/'+ id})
             },
-            goProposals() {
-                this.$router.push({path: '/proposals'})
+            goProposals(id) {
+                this.$router.push({path: '/proposals/'+id})
             },
 
 
         },
         computed: {
-            getMemberList() {
-                console.log('this.$store.getters.memberList', this.$store.getters.memberList)
-                return this.$store.getters.memberList;
+            getRecommendList() {
+                return this.$store.getters.recommendList;
+            },
+            getCommittee() {
+                const that = this;
+                const id = that.$route.params.id;
+                const list = this.$store.getters.committeeList;
+                console.log(list);
+                return list.find(member => {
+                    return member.id === id
+                })
             }
         }
     }
 </script>
 
 <style scoped>
-    .case_details_page{
+    .case_details_page {
 
     }
+
     .van-nav-bar {
         height: 55px;
         line-height: 55px;

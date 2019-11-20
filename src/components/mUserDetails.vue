@@ -6,7 +6,7 @@
                     <van-image
                             width="60"
                             height="80"
-                            :src="member.photo |urlPrefixion"
+                            :src="member.photo"
                     />
                 </van-col>
                 <van-col span="18">
@@ -25,7 +25,7 @@
                 </van-col>
 
             </van-row>
-            <div class="click-display-all" style="width: 100%;padding: 10px;font-size: 11px;color: #aaaaaa;"
+            <div class="click-display-all" style="width: 100%;padding: 10px 0;font-size: 11px;color: #aaaaaa;"
                  v-show="!isShow"
                  @click="showToggle()">
                 {{btnText}}
@@ -64,11 +64,11 @@
                 }
             },
         },
-        filters: {
-            urlPrefixion(url) {
-                return 'http://58.54.251.155:8088/wzzgh-upload/' + url;
-            }
-        },
+        // filters: {
+        //     urlPrefixion(url) {
+        //         return 'http://58.54.251.155:8088/wzzgh-upload/' + url;
+        //     }
+        // },
     }
 </script>
 

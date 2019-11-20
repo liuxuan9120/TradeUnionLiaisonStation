@@ -21,10 +21,9 @@
             >
                 <van-cell-group border v-for="item in list" v-bind:key="item.id">
                     <van-cell
-
-                            :title="item.title"
+                            :title="item.question|stringLen"
                             is-link
-                            :label="item.time"
+                            :label="item.questionTimeF"
                             @click="onClickItem(item)"
                             border
                     >
@@ -43,14 +42,43 @@
         data() {
             return {
                 list: [
-                    {id: 1, title: '会员咨询问题的描述内容', time: '时间1'},
-                    {id: 2, title: '会员咨询问题的描述内容', time: '时间1'}
+                    // {
+                    //     id: 'dc970c53-da83-4817-8fb3-a3710c360c09',
+                    //     questionTitle: '会员咨询问题的描述内容1',
+                    //     questionTimeF: '2019-08-30 10:21:21',
+                    //     question: ''
+                    // },
+                    // {
+                    //     id: 'e1ab3a52-393b-421a-acdb-3cb73e23a634',
+                    //     questionTitle: '会员咨询问题的描述内容2',
+                    //     questionTimeF: '2019-08-30 10:21:21',
+                    //     question: ''
+                    // }
                 ],
-                loading: false,
-                finished: true,
+                loading: true,
+                finished: false,
+                pageIndex: 1,
+                pageSize: 20,
             };
         },
+        created() {
+            const that = this;
+            /*myQuestionList?questionType=0&pageIndex=1&pageSize=20*/
+            this.axios.get(`${that.$API}/myQuestionList?questionType=0&pageIndex=${that.pageIndex}&pageSize=${that.pageSize}`, {})
+                .then(function (response) {
+                    that.list = response.data.rows;
+                    that.loading = false;
+                    if (response.data.total < that.pageSize || response.data.total === 0) {
+                        that.finished = true;
+                    }
+                })
+                .catch(function (error) {
+                    // eslint-disable-next-line no-console
+                    console.log(error);
+                    that.$toast('获取失败5');
 
+                });
+        },
         methods: {
             onClickLeft() {
                 window.history.length > 1
@@ -60,7 +88,7 @@
             },
             onClickRight() {
                 // Toast('按钮');
-                this.$router.push({path: '/messageBoard'})
+                this.$router.push({path: '/memberList'})
             },
             onLoad() {
                 // 异步更新数据
@@ -80,39 +108,80 @@
             onClickItem(item) {
                 this.$router.push({path: '/questionDetails/' + item.id})
             }
-        }
+        },
+
+        filters: {
+            stringLen: function (str) {
+                if (str.length >= 15) {
+                    return str.substring(0, 15)+'...';
+                } else {
+                    return str
+                }
+            },
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                let h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                let m = date.getMinutes();
+                m = m < 10 ? ('0' + m) : m;
+                let s = date.getSeconds();
+                s = s < 10 ? ('0' + s) : s;
+                return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+            }
+        },
+        computed: {}
     }
 </script>
 
 <style scoped>
-    .van-nav-bar{
+    .van-nav-bar {
         height: 55px;
         line-height: 55px;
     }
-    .van-nav-bar__left, .van-nav-bar__right{
+
+    .van-nav-bar__left, .van-nav-bar__right {
         font-size: 16px;
     }
-    .van-nav-bar__title{
+
+    .van-nav-bar__title {
         font-size: 18px;
     }
+
     .van-nav-bar .van-icon {
         color: black;
         vertical-align: middle;
         font-size: 18px;
     }
+
     .van-doc-nav-bar .van-icon {
         color: #969799;
         font-size: 24px;
         cursor: pointer;
     }
-    .van-nav-bar__text{
+
+    .van-nav-bar__text {
         color: black;
 
     }
-    .van-cell__title{
-       font-size: 18px;
+
+    .van-cell__title {
+        font-size: 18px;
+
+
     }
-    .van-cell__label{
+
+    .van-cell__label {
         font-size: 13px;
+    }
+
+    .van-cell__title > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>

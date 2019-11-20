@@ -2,7 +2,7 @@
     <div>
         <div>
             <van-nav-bar
-                    title="解答疑问"
+                    title="修改答疑"
                     left-text="返回"
                     left-arrow
                     @click-left="onClickLeft"
@@ -40,7 +40,7 @@
                         <van-field
                                 v-model="message"
                                 type="textarea"
-                                placeholder="请填写需要解答的内容"
+                                placeholder="请填写需要修改的内容"
                                 rows="10"
                         />
                     </van-cell-group>
@@ -49,7 +49,7 @@
 
 
             <div style="padding: 10px;">
-                <van-button type="primary" size="large" @click="onSubmit">提交</van-button>
+                <van-button type="primary" size="large" @click="onSubmit">修改</van-button>
             </div>
         </div>
     </div>
@@ -58,13 +58,16 @@
 <script>
     import headImg from '../assets/timg.jpg'
     export default {
-        name: "MemberAnswer",
+        name: "changeAnswer",
         data() {
             return {
                 message: '',
                 id:null,
                 userImg: null,
             }
+        },
+        created(){
+            this.message=this.getQuestionInfo.reply;
         },
         mounted() {
             this.userImg = headImg;
@@ -95,25 +98,23 @@
             onSubmit() {
 
                 const that = this;
-                /*http://58.54.251.155:8088/wzzgh-fwdt/committeeImp/
-                committeeReply?committeeId=committeeId&reply=reply&committeeMemberinfoId=committeeMemberinfoId*/
-                const committeeId = that.$store.getters.curId;
+                /*editCommitteeReply?reply=111&committeeMemberinfoId=222*/
+                // const committeeId = that.$store.getters.curId;
                 const data = new FormData();
-                data.append('committeeId', committeeId);
                 data.append('reply', that.message);
                 data.append('committeeMemberinfoId', this.id);
-                this.axios.post(`${that.$API}/committeeReply`, data,{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                this.axios.post(`${that.$API}/editCommitteeReply`, data,{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
                     .then(function (response) {
                         // eslint-disable-next-line no-console
                         console.log("response",response)
-                        that.$toast('提交成功');
+                        that.$toast('修改答疑成功');
                         that.$router.push({path: '/viphome'})
                         // console.log(response.data.data.content);
                     })
                     .catch(function (error) {
                         // eslint-disable-next-line no-console
                         console.log(error);
-                        that.$toast('获取失败3');
+                        that.$toast('修改失败');
                     });
             }
 

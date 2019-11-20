@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <van-tabs>
+            <van-tabs v-if="caseList.length">
                 <van-tab v-for="(item,index) in caseList" :title="'案例 ' + (index+1)" v-bind:key="item.id">
                     <div style="text-align: left;padding: 10px;background-color: white;">
                         <div>
@@ -10,10 +10,10 @@
                             </div>
 
                             <div>
-                                <span style="font-size: 14px;color: #666666;">{{item.questions}}</span>
+                                <span style="font-size: 14px;color: #666666;">{{item.question}}</span>
                             </div>
                             <div style="padding: 10px 0;">
-                                <time style="font-size: 12px;color: #aaaaaa;">{{item.qTime|formatDate}}</time>
+                                <time style="font-size: 12px;color: #aaaaaa;">{{item.questionTimeF}}</time>
                             </div>
 
                         </div>
@@ -26,7 +26,7 @@
                                         </td>
                                         <td>
                                             <p><span
-                                                    style="font-size: 16px;font-weight: bold;">{{item.name}}</span><span
+                                                    style="font-size: 16px;font-weight: bold;">{{item.committeeMember.name}}</span><span
                                                     style="font-size: 13px;color: #888888;">&nbsp;&nbsp;&nbsp;&nbsp;回答了该问题</span>
                                             </p>
                                         </td>
@@ -36,10 +36,10 @@
                             </div>
 
                             <div>
-                                <span style="font-size: 14px;color: #666666;">{{item.answers}}</span>
+                                <span style="font-size: 14px;color: #666666;">{{item.reply}}</span>
                             </div>
                             <div style="padding: 10px 0;">
-                                <span style="font-size: 12px;color: #aaaaaa;">{{item.aTime|formatDate}}</span>
+                                <span style="font-size: 12px;color: #aaaaaa;">{{item.replyTimeF}}</span>
                             </div>
                         </div>
                     </div>
@@ -53,48 +53,52 @@
 <script>
     export default {
         name: "mCaseList",
+        props:[
+            'caseList'
+        ],
         data(){
             return {
-                caseList: [{
-                    id: 1,
-                    name: '委员名称',
-                    questions: '会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字。',
-                    qTime: Date.now(),
-                    answers: '委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字。',
-                    aTime: Date.now()
-                }, {
-                    id: 2,
-                    name: '委员名称',
-                    questions: '问题2',
-                    qTime: '提问时间2',
-                    answers: '回答2',
-                    aTime: '回答时间2'
-                },
-                    {
-                        id: 3,
-                        name: '委员1',
-                        questions: '问题1',
-                        qTime: '提问时间1',
-                        answers: '回答1',
-                        aTime: '回答时间1'
-                    },
-                    {
-                        id: 4,
-                        name: '委员1',
-                        questions: '问题1',
-                        qTime: '提问时间1',
-                        answers: '回答1',
-                        aTime: '回答时间1'
-                    },
-                    {
-                        id: 5,
-                        name: '委员1',
-                        questions: '问题1',
-                        qTime: '提问时间1',
-                        answers: '回答1',
-                        aTime: '回答时间1'
-                    },
-                ]
+                // caseList: [
+                //     {
+                //     id: 1,
+                //     name: '委员名称',
+                //     questions: '会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字会员提问问题描述文字。',
+                //     qTime: Date.now(),
+                //     answers: '委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字委员答疑内容文字。',
+                //     aTime: Date.now()
+                // }, {
+                //     id: 2,
+                //     name: '委员名称',
+                //     questions: '问题2',
+                //     qTime: '提问时间2',
+                //     answers: '回答2',
+                //     aTime: '回答时间2'
+                // },
+                //     {
+                //         id: 3,
+                //         name: '委员1',
+                //         questions: '问题1',
+                //         qTime: '提问时间1',
+                //         answers: '回答1',
+                //         aTime: '回答时间1'
+                //     },
+                //     {
+                //         id: 4,
+                //         name: '委员1',
+                //         questions: '问题1',
+                //         qTime: '提问时间1',
+                //         answers: '回答1',
+                //         aTime: '回答时间1'
+                //     },
+                //     {
+                //         id: 5,
+                //         name: '委员1',
+                //         questions: '问题1',
+                //         qTime: '提问时间1',
+                //         answers: '回答1',
+                //         aTime: '回答时间1'
+                //     },
+                // ]
             }
         },
         filters:{

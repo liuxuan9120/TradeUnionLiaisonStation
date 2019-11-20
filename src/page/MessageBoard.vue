@@ -29,7 +29,7 @@
             <div style="padding:10px 0 10px 16px;text-align: left;background-color: white;margin-top: 20px;margin-bottom: 10px;">
                 <table>
                     <tr>
-                        <td><span style="font-size: 14px;">不对外展示咨询问题及答复</span></td>
+                        <td><span style="font-size: 14px;">是否允许设置为公开推荐案例</span></td>
                         <td>
                             <van-checkbox v-model="checked"></van-checkbox>
                         </td>
@@ -50,7 +50,7 @@
         name: "MessageBoard",
         data() {
             return {
-                checked: true,
+                checked: false,
                 message: ''
             };
         },
@@ -61,8 +61,41 @@
                     : this.$router.push('/')
             },
             onSubmit() {
-                // console.log('submit!');
-                this.$toast('提交');
+                const that = this;
+                const id = that.$route.params.id;
+                /*http://58.54.251.155:8088/wzzgh-fwdt/committeeImp/committeeMemberinfoSave?liuyan=dddddddddddddddddddddddd&curId=12345*/
+                const recommend = that.checked ? '1' : '0';
+                const data = new FormData();
+                data.append('liuyan', that.message);
+                data.append('isAllowRecommend', recommend);
+                data.append('committeeMemberId', id);
+                this.axios.post(`${that.$API}/committeeMemberinfoSave`, data, {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                    .then(function (response) {
+                        // eslint-disable-next-line no-console
+                        console.log("response",response)
+                        if(response.data.result){
+                            // if(response.data.msg !==''){
+                            //     that.$toast(response.data.msg);
+                            // }else{
+                            //     that.$toast('提交成功');
+                            // }
+                            that.$toast('提交成功');
+                            that.$router.push({path: '/MemberList'})
+                        }else{
+                            that.$toast('提交失败7');
+                        }
+                        // console.log(response.data.data.content);
+                        // if (response.data.result) {
+                        //     that.$toast('提交成功');
+                        // } else {
+                        //     that.$toast(response.data.msg);
+                        // }
+                    })
+                    .catch(function (error) {
+                        // eslint-disable-next-line no-console
+                        console.log("error",error)
+                        that.$toast('提交失败8');
+                    });
             }
         },
 
