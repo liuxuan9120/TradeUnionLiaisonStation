@@ -151,10 +151,19 @@
             const that = this;
             const id = that.$route.params.id;
             this.caseList = this.getQuestionById(id);
-            this.caseList.appendix = config.fileUrl + this.caseList.appendix;
-            const url = this.caseList.appendix;
-            this.imgShow = url.indexOf('.png') >= 0;
-            this.pdfShow = url.indexOf('.pdf') >= 0;
+            if(this.caseList.appendix){
+                this.caseList.appendix = config.fileUrl + this.caseList.appendix;
+
+            }
+            if(this.caseList.questionType==='1'){
+                const url = this.caseList.appendix;
+                this.imgShow = url.indexOf('.png') >= 0||url.indexOf('.jpg') >= 0;
+                this.pdfShow = !this.imgShow;
+            }else{
+                this.imgShow = false;
+                this.pdfShow = false;
+            }
+
             this.memberInfo = this.caseList.memberInfo;
             this.images = [this.caseList.appendix];
             this.isShow = true;

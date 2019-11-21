@@ -1,6 +1,6 @@
 // 定义一些公共的属性和方法
 /*test=true测试，false正式环境*/
-const test = false;//
+const test = true;//
 const httpUrl = test?'http://58.54.251.155:8088':'http://www.wzgh.org';
 const api = test? '/wzzgh-fwdt/committeeImp': '/committeeImp';
 const loginUrl = httpUrl + '/regUser/login?prepage=jbwy/#/memberList';
