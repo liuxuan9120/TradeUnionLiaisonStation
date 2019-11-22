@@ -156,10 +156,14 @@
 
             }
             if(this.caseList.questionType==='1'){
+                // eslint-disable-next-line no-console
+                console.log("11111111111111")
                 const url = this.caseList.appendix;
                 this.imgShow = url.indexOf('.png') >= 0||url.indexOf('.jpg') >= 0;
                 this.pdfShow = !this.imgShow;
             }else{
+                // eslint-disable-next-line no-console
+                console.log("222222222222222222222")
                 this.imgShow = false;
                 this.pdfShow = false;
             }

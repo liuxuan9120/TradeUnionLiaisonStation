@@ -92,9 +92,22 @@
         mounted() {
         },
         methods: {
+            checkPhone(phone) {
+                if (!(/^1[3456789]\d{9}$/.test(phone))) {
+                    this.$toast('手机号码有误，请重填');
+                    return false;
+                }else{
+                    return true;
+                }
+
+            },
             getMSgCode() {
-                if (!this.loginForm.username) {
+                const phone=this.loginForm.username
+                if (!phone) {
                     this.$toast('请输入用户名(手机号)');
+                    return ;
+                }
+                if(!this.checkPhone(phone)){
                     return;
                 }
                 this.isMsg = true;
@@ -110,7 +123,7 @@
                     }
                 }, 1000);
                 //获取验证码
-                this.sendCaptcha(this.loginForm.username);
+                this.sendCaptcha(phone);
 
             },
             onLogin() {
