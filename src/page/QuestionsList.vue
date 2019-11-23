@@ -63,8 +63,10 @@
         },
         created() {
             const that = this;
+            /*0是留言板1是提案征集‘’是全部*/
+            const qType="";
             /*myQuestionList?questionType=0&pageIndex=1&pageSize=20*/
-            this.axios.get(`${that.$API}/myQuestionList?questionType=0&pageIndex=${that.pageIndex}&pageSize=${that.pageSize}`, {})
+            this.axios.get(`${that.$API}/myQuestionList?questionType=${qType}&pageIndex=${that.pageIndex}&pageSize=${that.pageSize}`, {})
                 .then(function (response) {
                     that.list = response.data.rows;
                     that.loading = false;

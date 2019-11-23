@@ -6,7 +6,7 @@ const api = test? '/wzzgh-fwdt/committeeImp': '/committeeImp';
 const loginUrl = httpUrl + '/regUser/login?prepage=jbwy/#/memberList';
 // /*http://www.wzgh.org/wzzgh-upload*/
 //http://58.54.251.155:8088/wzzgh-upload/upload/committeeMemberCover/2019/8/88301936-cb4d-41aa-952f-7308b52973ca.jpg
-const upload =test?'/wzzgh-upload':'/wzzgh-upload/upload';
+const upload ='/wzzgh-upload';
 let imgUrl = httpUrl + upload;
 let fileUrl = httpUrl + upload;
 

@@ -43,12 +43,12 @@
             </div>
             <div style="text-align: left;background-color: white;margin: 10px 0;padding: 10px;">
                 <div style="padding: 10px;">
-                    <span>上传附件</span><span style="color: #dddddd;">    最多上传5份</span>
+                    <span>上传附件</span><span style="color: #dddddd;">    最多上传1份</span>
                 </div>
                 <van-uploader
                         v-model="fileList"
                         multiple
-                        :max-count="5"
+                        :max-count="1"
                         :before-read="beforeRead"
                 />
             </div>
