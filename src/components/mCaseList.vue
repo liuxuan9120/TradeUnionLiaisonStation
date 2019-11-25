@@ -6,7 +6,7 @@
                     <div style="text-align: left;padding: 10px;background-color: white;">
                         <div>
                             <div>
-                                <p><span style="font-size: 16px;font-weight: bold;">第一次提问</span></p>
+                                <p><span style="font-size: 16px;font-weight: bold;">提问</span></p>
                             </div>
 
                             <div>

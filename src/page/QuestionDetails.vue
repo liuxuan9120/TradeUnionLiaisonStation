@@ -10,60 +10,61 @@
                     border
             />
         </div>
-        <div style="margin-top: 56px;">
+        <div >
 
 
-            <div style="position: fixed;top:60px;bottom: 60px;width: 100%;background-color: #f1f1f1;"
+            <div style="position: fixed;top:56px;width: 100%;background-color: #f1f1f1;"
                  >
                 <m_uer_details :member="getCommitteeMember"></m_uer_details>
-                <!--<div style="background-color: white;" v-show="committeeMember.name">
-                    <van-row>
-                        <van-col span="6">
-                            <van-image
-                                    width="60"
-                                    height="80"
-                                    :src="committeeMember.photo"
-                            />
-                        </van-col>
-                        <van-col span="18">
-                            <div class="item-body">
-                                <div style="text-align: left;font-size: 14px;padding: 5px 0 5px 0;">
-                                    <span>{{committeeMember.name}}</span><span>{{committeeMember.post}}</span>
-                                </div>
 
-                                <div :class="{'item-content-display-all': isShow, 'item-content': !isShow}"
-                                     @click="showToggle()">
-                                    {{committeeMember.introduction}}
-                                </div>
-
-
-                            </div>
-                        </van-col>
-
-                    </van-row>
-                    <div class="click-display-all" style="width: 100%;padding: 10px;font-size: 11px;color: #aaaaaa;"
-                         v-show="!isShow"
-                         @click="showToggle()">
-                        {{btnText}}
-                    </div>
-                </div>-->
                 <div>
-<!--                    <m_case_list :caseList="getCaseList"></m_case_list>-->
+
+                    <van-image-preview
+                            v-model="showBigImage"
+                            :images="images"
+                    >
+                        <template v-slot:index>第页</template>
+                    </van-image-preview>
                     <div style="text-align: left;padding: 10px;background-color: white;">
                         <div>
                             <div>
-                                <p><span style="font-size: 16px;font-weight: bold;">第一次提问</span></p>
+                                <p><span style="font-size: 16px;font-weight: bold;">提问</span></p>
                             </div>
 
                             <div>
                                 <span style="font-size: 14px;color: #666666;word-wrap:break-word;">{{caseList.question}}</span>
+                            </div>
+                            <div v-show="imgShow">
+                                <van-image
+                                        @click="onClickImage"
+                                        width="10rem"
+                                        height="10rem"
+                                        fit="contain"
+                                        :src="caseList.appendix"
+                                />
+                            </div>
+                            <div v-show="pdfShow">
+                                <van-divider content-position="left">附件</van-divider>
+                                <div style="display: flex;justify-content: space-between;">
+
+                                    <div style="display: flex;justify-content: flex-start;">
+                                        <img width="22px"
+                                             height="22px"
+                                             fit="contain"
+                                             src="../assets/attach_file.png"
+                                        >
+                                        <span style="font-size: 12px;">{{caseList.questionTitle}}</span>
+                                    </div>
+                                    <van-button round plain hairline size="mini" type="info" @click="onclickDownload">查 看
+                                    </van-button>
+                                </div>
                             </div>
                             <div style="padding: 10px 0;">
                                 <span style="font-size: 12px;color: #aaaaaa;">{{caseList.questionTimeF}}</span>
                             </div>
 
                         </div>
-                        <div v-show="committeeMember.name">
+                        <div v-show="caseList.questionType!=='1'">
                             <div style="text-align: left;">
                                 <table>
                                     <tr>
@@ -89,23 +90,23 @@
                             </div>
                         </div>
                     </div>
+                    <div style="padding:10px 0 10px 16px;text-align: left;background-color: white;margin-top: 20px;margin-bottom: 10px;" v-show="caseList.questionType!=='1'">
+                        <table>
+                            <tr>
+                                <td><span>不对外展示咨询问题及答复</span></td>
+                                <td>
+                                    <van-switch
+                                            v-model="checked"
+                                            size="24px"
+                                    />
 
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
                 </div>
-                <div style="padding:10px 0 10px 16px;text-align: left;background-color: white;margin-top: 20px;margin-bottom: 10px;">
-                    <table>
-                        <tr>
-                            <td><span>不对外展示咨询问题及答复</span></td>
-                            <td>
-                                <van-switch
-                                        v-model="checked"
-                                        size="24px"
-                                />
 
-                            </td>
-                        </tr>
-                    </table>
-
-                </div>
             </div>
 
         </div>
@@ -119,6 +120,8 @@
 <script>
     import m_uer_details from '../components/mUserDetails';
     // import m_case_list from '../components/mCaseList';
+    import {ImagePreview} from "vant";
+    import config from '../config'
     export default {
         name: "QuestionDetails",
         components: {
@@ -137,6 +140,10 @@
                 },
                 isShow: false,
                 btnText: "点击查看全文",
+                showBigImage: false,
+                images: [],
+                imgShow: false,
+                pdfShow: false,
             };
         },
         created() {
@@ -146,12 +153,12 @@
 
             const that = this;
             const id = that.$route.params.id;
-
             this.axios.get(`${that.$API}/myQuestionDetail?id=${id}`, {})
                 .then(function (response) {
                     // eslint-disable-next-line no-console
                     console.log("@@@@@@@response", response)
                     that.caseList = response.data.data;
+                    that.isShowFile();
                     // eslint-disable-next-line no-console
                     console.log(" ##########that.caseList", that.caseList)
 
@@ -168,6 +175,38 @@
                 });
         },
         methods: {
+            onClickImage() {
+                //2在函数中使用
+                ImagePreview({images: this.images, startPosition: 0});//this.images为图片资源
+            },
+            // getQuestionById(id) {
+            //     const list = this.$store.getters.questionList;
+            //     for (let question of list) {
+            //         if (question.id === id) {
+            //             return question;
+            //         }
+            //     }
+            // },
+            isShowFile(){
+                const that = this;
+                if(that.caseList.appendix){
+                    that.caseList.appendix = config.fileUrl + that.caseList.appendix;
+
+                }
+                if(that.caseList.questionType==='1'){
+                    // eslint-disable-next-line no-console
+                    console.log("11111111111111")
+                    const url = that.caseList.appendix;
+                    that.imgShow = url.indexOf('.png') >= 0||url.indexOf('.jpg') >= 0;
+                    that.pdfShow = !that.imgShow;
+                }else{
+                    // eslint-disable-next-line no-console
+                    console.log("222222222222222222222")
+                    that.imgShow = false;
+                    that.pdfShow = false;
+                }
+                that.images = [that.caseList.appendix];
+            },
             onClickLeft() {
                 window.history.length > 1
                     ? this.$router.go(-1)
@@ -187,9 +226,16 @@
                     this.btnText = "点击查看全文"
                 }
             },
+            onclickDownload() {
+                window.open(this.caseList.appendix);
+            }
         },
         computed: {
+
             getCommitteeMember(){
+                // eslint-disable-next-line no-console
+                console.log("this.committeeMember;",this.committeeMember);
+
                 return this.committeeMember;
             },
             getCaseList(){
@@ -261,7 +307,7 @@
 
     .click-display-all {
         color: #6ea4eb;
-        margin-bottom: 15px;
+        margin-bottom: 12px !important;
 
     }
 </style>

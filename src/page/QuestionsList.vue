@@ -23,7 +23,7 @@
                     <van-cell
                             :title="item.question|stringLen"
                             is-link
-                            :label="item.questionTimeF"
+                            :label="item.questionTimeF|strTime"
                             @click="onClickItem(item)"
                             border
                     >
@@ -113,6 +113,9 @@
         },
 
         filters: {
+            strTime:function(str){
+                return '提问时间：'+str
+            },
             stringLen: function (str) {
                 if (str.length >= 15) {
                     return str.substring(0, 15)+'...';

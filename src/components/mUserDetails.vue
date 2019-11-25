@@ -6,7 +6,7 @@
                     <van-image
                             width="60"
                             height="80"
-                            :src="member.photo"
+                            :src="member.photo|getUserImg"
                     />
                 </van-col>
                 <van-col span="18">
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+    import config from '../config'
     export default {
         name: "mUserDetails",
         props:[
@@ -64,11 +65,19 @@
                 }
             },
         },
-        // filters: {
-        //     urlPrefixion(url) {
-        //         return 'http://58.54.251.155:8088/wzzgh-upload/' + url;
-        //     }
-        // },
+        filters: {
+            // urlPrefixion(url) {
+            //     return 'http://58.54.251.155:8088/wzzgh-upload/' + url;
+            // },
+            getUserImg(str){
+               if(str.indexOf(config.imgUrl)>=0){
+                   return str
+               }else{
+                   return config.imgUrl +str;
+               }
+
+            },
+        },
     }
 </script>
 
@@ -100,7 +109,7 @@
 
     .click-display-all {
         color: #6ea4eb;
-        margin-bottom: 15px;
+        margin-bottom: 12px !important;
 
     }
 </style>

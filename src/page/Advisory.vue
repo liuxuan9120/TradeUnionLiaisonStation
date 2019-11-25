@@ -148,28 +148,10 @@
         },
         mounted() {
             this.userImg = headImg;
-            const that = this;
-            const id = that.$route.params.id;
-            this.caseList = this.getQuestionById(id);
-            if(this.caseList.appendix){
-                this.caseList.appendix = config.fileUrl + this.caseList.appendix;
-
-            }
-            if(this.caseList.questionType==='1'){
-                // eslint-disable-next-line no-console
-                console.log("11111111111111")
-                const url = this.caseList.appendix;
-                this.imgShow = url.indexOf('.png') >= 0||url.indexOf('.jpg') >= 0;
-                this.pdfShow = !this.imgShow;
-            }else{
-                // eslint-disable-next-line no-console
-                console.log("222222222222222222222")
-                this.imgShow = false;
-                this.pdfShow = false;
-            }
+            this.isShowFile();
 
             this.memberInfo = this.caseList.memberInfo;
-            this.images = [this.caseList.appendix];
+
             this.isShow = true;
             if (this.caseList.reply) {
                 this.style = 'info';
@@ -180,6 +162,28 @@
             }
         },
         methods: {
+            isShowFile(){
+                const that = this;
+                const id = that.$route.params.id;
+                that.caseList = that.getQuestionById(id);
+                if(that.caseList.appendix){
+                    that.caseList.appendix = config.fileUrl + that.caseList.appendix;
+
+                }
+                if(that.caseList.questionType==='1'){
+                    // eslint-disable-next-line no-console
+                    console.log("11111111111111")
+                    const url = that.caseList.appendix;
+                    that.imgShow = url.indexOf('.png') >= 0||url.indexOf('.jpg') >= 0;
+                    that.pdfShow = !that.imgShow;
+                }else{
+                    // eslint-disable-next-line no-console
+                    console.log("222222222222222222222")
+                    that.imgShow = false;
+                    that.pdfShow = false;
+                }
+                that.images = [that.caseList.appendix];
+            },
             getQuestionById(id) {
                 const list = this.$store.getters.questionList;
                 for (let question of list) {
