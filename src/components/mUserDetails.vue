@@ -70,11 +70,17 @@
             //     return 'http://58.54.251.155:8088/wzzgh-upload/' + url;
             // },
             getUserImg(str){
-               if(str.indexOf(config.imgUrl)>=0){
-                   return str
-               }else{
-                   return config.imgUrl +str;
-               }
+                // eslint-disable-next-line no-console
+                if(str){
+                    if(str.indexOf(config.imgUrl)>=0){
+                        return str
+                    }else{
+                        return config.imgUrl +str;
+                    }
+                }else{
+                    return str
+                }
+
 
             },
         },

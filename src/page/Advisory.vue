@@ -117,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <div style="background-color: white;position: fixed;bottom: 0;width: 100%;">
+        <div style="background-color: white;position: fixed;bottom: 0;width: 100%;" v-show="caseList.questionType!=='1'">
             <van-button :type="style" size="large" @click="onSubmit">{{footerName}}</van-button>
 
         </div>
